@@ -1,0 +1,43 @@
+html{
+    font-size : 16px;
+    line-height: 1.5;
+    }
+
+body{
+    margin: 0;
+    padding: 0;
+    }
+
+nav{
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    }
+nav ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav ul li{
+    margin: 0 10px;
+    }
+
+    
+nav ul li a{
+    color: #fff;
+    text-decoration: none;
+    }
+nav ul li a:hover{
+    color: #fff;
+    text-decoration: underline;
+    }
+.container{
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+}  
+

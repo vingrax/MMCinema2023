@@ -1,0 +1,13 @@
+{% extends 'Home/frontpage.html' %}
+
+{% block content %}
+{% for show in shows %}
+    
+    {% if show.film_name != None and show.film_name != "" %}
+        <p>{{show.film_name}},<p>        
+    {% endif %}
+    
+
+{% endfor %}
+
+{% endblock content %}

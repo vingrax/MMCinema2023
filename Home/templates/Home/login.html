@@ -1,0 +1,14 @@
+
+{% extends 'Home/frontpage.html' %}
+
+{% block content %}
+<H2>Login</H2>
+{% if form.errors %}
+<p class='error'>Invalid Email or Password<p>
+{% endif %}
+<form method='post'>
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type='submit'>Login</button>
+</form>
+{% endblock content %} 
