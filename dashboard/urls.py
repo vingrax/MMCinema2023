@@ -3,6 +3,6 @@ from . import views
 
 urlpatterns = [
     path('',views.dashboardView,name='dashboard'),
-    path('shows/',views.showView,name='shows'),
-    path('download/',views.download_csv)
+    path('download/',views.download_csv),
+    path('item_autocomplete/', views.PlaceAutocompleteView.as_view(), name='place_autocomplete')
 ]

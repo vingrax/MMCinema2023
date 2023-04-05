@@ -1,7 +1,84 @@
 {% extends 'Home/frontpage.html' %}
 
-{% block content %}
 
+{% block content %}
+<script>
+    jQuery("#addMore").click(function(){
+        var contents = jQuery("form").html();
+        jQuery("#input-field").append(contents);
+    });
+</script>
+<h2>Select Location and Place</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="location">Location:</label>
+    <select name="location" id="location" onChange="form.submit();">
+        <option hidden=true value="{{ selected_location_id }}">{{ defloc.name }}</option>
+        {% for location in locations %}
+        <option value="{{ location.id }}">{{ location.name }}</option>        
+        {% endfor %}
+    </select>
+    <label for="place">Place:</label>
+    <select name="place" id="place" onChange="form.submit();"> 
+        <option hidden=true value="{{ selected_place_id }}">{{ defplace.name }}</option>
+        {% for place in places %}       
+        <option value="{{ place.id }}">{{ place.name }}</option>        
+        {% endfor %}
+    </select>
+</form>
+{% if selected_location_id and selected_place_id %}
+    <h2>Input Film Details for Each Theatre</h2>
+    {% for theater in theaters %}
+        <h3>{{ theater.name }}</h3>
+        {% if theater.thrscreen.all %}
+            {% for screen in theater.thrscreen.all %}
+                <h4>{{ screen.name }}</h4>
+                <form method="post">
+                {% csrf_token %}
+                    <div>
+                        <div class="film-input" id="input-field">
+                            <label for="film_name">Film Name:</label>
+                            <input type="text" name="film_name" id="film_name">
+                            <label for="language">Language:</label>
+                            <input type="text" name="language" id="language">
+                            <label for="date">Date:</label>
+                            <input type="date" name="date" id="date">
+                            <label for="show_time_{{ screen.name }}">Show Time:</label>
+                            <input type="time" name="show_time" id="show_time">                            
+                            <button type="button" class="remove-film-input" data-screen="{{ screen.id}}">Remove Film</button>
+                        <div>
+                        <div class="film-input-actions">
+                            <button type="button" class="add-film-input" data-screen="{{ screen.id}}">Add Film</button>
+                            <button type="submit">Submit</button>  
+                        </div>
+                    </div>                  
+                </form>
+                {% endfor %}
+        {% else %}
+        {% with ''|center:theater.screens as range %}
+                {% for i in range %}
+                    <h4>Screen {{forloop.counter}}</h4>
+                    <form method="post">
+                    {% csrf_token %}
+                    <div class="film-input" id="input-field">
+                        <label for="film_name">Film Name:</label>
+                        <input type="text" name="film_name" id="film_name">
+                        <label for="language">Language:</label>
+                        <input type="text" name="language" id="language">
+                        <label for="date">Date:</label>
+                        <input type="date" name="date" id="date">
+                        <label for="show_time_{{ screen.name }}">Show Time:</label>
+                        <input type="time" name="show_time" id="show_time">                            
+                        <button type="button" class="remove-film-input" data-screen="{{ screen.id}}">Remove Film</button>
+                    <div>
+                        <button type="button" class="add-film-input" id="addMore">Add Film</button>
+                        <button type="submit">Submit</button>
+                    </form>                    
+                {% endfor %}
+            {% endwith %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
 
 {% endblock content %}
 
