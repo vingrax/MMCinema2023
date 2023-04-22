@@ -3,10 +3,56 @@
 
 {% block content %}
 <script>
-    jQuery("#addMore").click(function(){
-        var contents = jQuery("form").html();
-        jQuery("#input-field").append(contents);
-    });
+    function removeInputFields(button) {
+        // Get the parent element of the button
+        const inputFields = button.parentNode;
+        
+        // Remove the input fields
+        inputFields.remove();
+    }
+    
+    function addInputFields(button){
+        console.log(button)
+        // Get the div element
+        const myDiv = document.getElementById(button);
+
+        // Get the last child element of the div
+        const lastChild = myDiv.lastElementChild;
+
+        // Clone the last child element
+        const clonedLastChild = lastChild.cloneNode(true);
+
+        const inputs = clonedLastChild.querySelectorAll('input');
+        inputs.forEach(input => {
+        input.value = '';
+        });
+
+        // Append the cloned element to the div
+        myDiv.appendChild(clonedLastChild);
+
+    }
+
+    $(document).on('submit', 'daily-input-form', function(e) {
+        e.preventDefault(); // prevent the default form submission behavior
+        var formData = $(this).serialize(); // serialize the form data
+        // send an AJAX request to the server
+        $.ajax({
+          url: '/upload/',
+          type: 'POST',
+          data: formData,
+          success: function(response) {
+            console.log('Form data submitted successfully.');
+            // handle the server response
+          },
+          error: function(xhr, status, error) {
+            console.log('Error submitting form data: ' + error);
+            // handle the error
+          }
+        });
+      });
+
+      
+      
 </script>
 <h2>Select Location and Place</h2>
 <form method="post">
@@ -29,54 +75,39 @@
 {% if selected_location_id and selected_place_id %}
     <h2>Input Film Details for Each Theatre</h2>
     {% for theater in theaters %}
-        <h3>{{ theater.name }}</h3>
-        {% if theater.thrscreen.all %}
+        <h3>{{ theater.name }}</h3> 
             {% for screen in theater.thrscreen.all %}
                 <h4>{{ screen.name }}</h4>
-                <form method="post">
-                {% csrf_token %}
+                <form method="post" id="daily-input-form" action="{% url 'uploadHandle' %}">    
+                    {% csrf_token %}
+                    <input type="hidden" name="screen_id" value="{{ screen.id }}">
+                    <input type="hidden" name="theater_id" value="{{ theater.id }}">
                     <div>
-                        <div class="film-input" id="input-field">
-                            <label for="film_name">Film Name:</label>
-                            <input type="text" name="film_name" id="film_name">
-                            <label for="language">Language:</label>
-                            <input type="text" name="language" id="language">
-                            <label for="date">Date:</label>
-                            <input type="date" name="date" id="date">
-                            <label for="show_time_{{ screen.name }}">Show Time:</label>
-                            <input type="time" name="show_time" id="show_time">                            
-                            <button type="button" class="remove-film-input" data-screen="{{ screen.id}}">Remove Film</button>
-                        <div>
-                        <div class="film-input-actions">
-                            <button type="button" class="add-film-input" data-screen="{{ screen.id}}">Add Film</button>
-                            <button type="submit">Submit</button>  
+                        <div class="film-input" id="input-field{{screen.id}}">     
+                            {% if theater.thrshow.exists %}
+                                {% for show in theater.thrshow.all %}
+                                    {% if show.screen_id_id == screen.id and show.current%}
+                                        <div id="inputs">
+                                            <label for="film_name">Film Name:</label>
+                                            <input type="text" name="film_name" id="film_name" value="{{show.film_name}}"required>      
+                                            <label for="language">Language:</label>
+                                            <input type="text" name="language" id="language" value="{{show.language}}" required>
+                                            <label for="show_time">Show Time:</label>
+                                            <input name="show_time" id="show_time" value="{{show.show_times}}" required>                         
+                                            <button type="button" class="remove-film-input" onclick="removeInputFields(this)">Remove Film</button> 
+                                            <br>  
+                                        </div>                                                                    
+                                    {% endif %}                                            
+                                {% endfor %}                            
+                            {% endif %}    
                         </div>
+                        <div class="film-input-actions">
+                            <button type="button" class="add-film-input" onClick="addInputFields('input-field{{screen.id}}')">Add Film</button>
+                            <button type="submit" name='submit'>Submit</button>  
+                        </div>    
                     </div>                  
                 </form>
-                {% endfor %}
-        {% else %}
-        {% with ''|center:theater.screens as range %}
-                {% for i in range %}
-                    <h4>Screen {{forloop.counter}}</h4>
-                    <form method="post">
-                    {% csrf_token %}
-                    <div class="film-input" id="input-field">
-                        <label for="film_name">Film Name:</label>
-                        <input type="text" name="film_name" id="film_name">
-                        <label for="language">Language:</label>
-                        <input type="text" name="language" id="language">
-                        <label for="date">Date:</label>
-                        <input type="date" name="date" id="date">
-                        <label for="show_time_{{ screen.name }}">Show Time:</label>
-                        <input type="time" name="show_time" id="show_time">                            
-                        <button type="button" class="remove-film-input" data-screen="{{ screen.id}}">Remove Film</button>
-                    <div>
-                        <button type="button" class="add-film-input" id="addMore">Add Film</button>
-                        <button type="submit">Submit</button>
-                    </form>                    
-                {% endfor %}
-            {% endwith %}
-        {% endif %}
+            {% endfor %}      
     {% endfor %}
 {% endif %}
 

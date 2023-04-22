@@ -1,5 +1,6 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+from django.db.models import Max
 
 # Create your models here.
 class Location(models.Model):
@@ -11,25 +12,7 @@ class Location(models.Model):
     def __str__(self):
         return self.name
         
-class InputTable(models.Model):
-    location = models.CharField(db_column='Location', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    theater_name = models.CharField(db_column='Theater_name', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    film_name = models.CharField(db_column='Film_name', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    language = models.CharField(db_column='Language', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    date = models.DateField(blank=True, null=True)
-    show_time = models.CharField(db_column='Show_time', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    place = models.CharField(max_length=300, blank=True, null=True)
-    screen = models.CharField(max_length=200, blank=True, null=True)
-    t_sub = models.CharField(db_column='T_sub', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    contact_no = models.CharField(db_column='Contact_no', max_length=300, blank=True, null=True)  # Field name made lowercase.
-    booking = models.CharField(db_column='Booking', max_length=300, blank=True, null=True)  # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    no_show = models.CharField(db_column='No_Show', max_length=45, blank=True, null=True)  # Field name made lowercase.
-    oldtheatername = models.CharField(db_column='OldTheaterName', max_length=150, blank=True, null=True)  # Field name made lowercase.
 
-    class Meta:
-        managed = False
-        db_table = 'input_table'
 
 
 class Edition(models.Model):
@@ -45,7 +28,7 @@ class Edition(models.Model):
         return self.name
     
 class Places(models.Model):
-    location = models.IntegerField(db_column='Location', blank=True, null=True)  # Field name made lowercase.
+    location = models.ForeignKey(Location,models.DO_NOTHING,db_column='Location', blank=True, null=True,related_name='placeloc')  # Field name made lowercase.
     name = models.CharField(db_column='Name', max_length=250, blank=True, null=True)  # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
 
@@ -116,4 +99,42 @@ class Editionplaces(models.Model):
         return str(self.place)
     
 
+class InputTable(models.Model):
+    location = models.CharField(db_column='Location', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    theater_name = models.ForeignKey(Theater,models.DO_NOTHING,db_column='Theater_name', max_length=200, blank=True, null=True,related_name='throldshow')  # Field name made lowercase.
+    film_name = models.CharField(db_column='Film_name', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    language = models.CharField(db_column='Language', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    date = models.DateField(blank=True, null=True)
+    show_time = models.CharField(db_column='Show_time', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    place = models.CharField(max_length=300, blank=True, null=True)
+    screen = models.CharField(max_length=200, blank=True, null=True)
+    t_sub = models.CharField(db_column='T_sub', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    contact_no = models.CharField(db_column='Contact_no', max_length=300, blank=True, null=True)  # Field name made lowercase.
+    booking = models.CharField(db_column='Booking', max_length=300, blank=True, null=True)  # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    no_show = models.CharField(db_column='No_Show', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    oldtheatername = models.CharField(db_column='OldTheaterName', max_length=150, blank=True, null=True)  # Field name made lowercase.
+
     
+        
+
+    class Meta:
+        managed = False
+        db_table = 'input_table'
+
+
+class DailyInputs(models.Model):
+    id = models.AutoField(db_column='id', primary_key=True)  # Field name made lowercase.
+    film_name = models.CharField(db_column='film_name',max_length=200)
+    language = models.CharField(db_column='language',max_length=200)
+    theater_id = models.ForeignKey(Theater,models.DO_NOTHING,db_column='theater_id', max_length=200, blank=False, null=False,related_name='thrshow')  # Field name made lowercase.
+    screen_id = models.ForeignKey(Screen,models.DO_NOTHING,db_column='screen_id', max_length=200, blank=False, null=False,related_name='scrshow')  # Field name made lowercase.
+    current = models.BooleanField(db_column='current',default="False")
+    show_times = models.CharField(db_column='show_times',max_length=200)
+    date = models.DateField(db_column='date',null=False)
+    
+    class Meta:
+        managed = False
+        db_table = 'dailyinputs'
+    def __str__(self):
+        return str(self.film_name)
