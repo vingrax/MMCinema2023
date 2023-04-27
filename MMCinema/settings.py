@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'dashboard.apps.DashboardConfig',
-    'Home.apps.HomeConfig'
+    'Home.apps.HomeConfig',
+    'cinemacsv.apps.CinemacsvConfig'
 ]
 
 MIDDLEWARE = [

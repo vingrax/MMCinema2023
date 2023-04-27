@@ -5,7 +5,6 @@ from .models import InputTable,Places,Location,Theater,Screen,DailyInputs
 from django.db.models import Max
 from django.http import HttpResponse,JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
 from dal import autocomplete
 from django.db.models import Lookup
 from django.db.models import Field
@@ -25,16 +24,6 @@ Field.register_lookup(NotEqual)
 
 
 # Create your views here.
-@staff_member_required
-def download_csv(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="shows.csv"'
-    
-    writer = csv.writer(response)
-    writer.writerow(['Editions','Date','PlaceName', 'Theater Name','Spread','Theater Sub','Old Theater Name','Screen No','No Show','FilmName', 'Language', 'Time','Contact No','Ticket Booking'])
-    return response
-
-
 def uploadHandler(request):
     if request.method == 'POST':
         films = request.POST.getlist('film_name')
@@ -42,21 +31,24 @@ def uploadHandler(request):
         show_times = request.POST.getlist('show_time')        
         screen_id = request.POST.get('screen_id')
         theater_id = request.POST.get('theater_id')
-        i=0
-        for film in films:
-            film_name = film
-            language = languages[i]
-            show_time = show_times[i]
-
+        if films:
+            i=0
             # Set all previous DailyInputs with same screen_id to current=False
-            DailyInputs.objects.filter(date__ne=date.today()).update(current=False)
-            
-            # Create new DailyInputs instance and save to database
-            daily_input = DailyInputs(film_name=film_name, language=language, show_times=show_time, screen_id_id=screen_id, theater_id_id=theater_id, current=True,date=date.today())
-            daily_input.save()
-            i+=1
+            DailyInputs.objects.filter(screen_id_id=screen_id).update(current=False)
+            for film in films:
+                film_name = film
+                language = languages[i]
+                show_time = show_times[i]
 
-    return redirect('dashboard')
+                
+                
+                # Create new DailyInputs instance and save to database
+                daily_input = DailyInputs(film_name=film_name, language=language, show_times=show_time, screen_id_id=screen_id, theater_id_id=theater_id, current=True,date=date.today())
+                daily_input.save()
+                i+=1
+        else:
+            DailyInputs.objects.filter(screen_id_id=screen_id).update(current=False)
+    return HttpResponse(200)
             
             
 # def get_places(request, location_id):

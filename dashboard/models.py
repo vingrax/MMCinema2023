@@ -86,7 +86,7 @@ class Spread(models.Model):
 
 class Editionplaces(models.Model):
     location = models.ForeignKey(Location,models.DO_NOTHING,db_column='Location')  # Field name made lowercase.
-    edition = models.ForeignKey(Edition, models.CASCADE, db_column='Edition')  # Field name made lowercase.
+    edition = models.ForeignKey(Edition, models.CASCADE, db_column='Edition',related_name='editionplaces')  # Field name made lowercase.
     place = models.ForeignKey(Places,models.CASCADE,db_column = 'Place')  # Field name made lowercase.
     priority = models.IntegerField(db_column='Priority', blank=True, null=True,unique=True)  # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.

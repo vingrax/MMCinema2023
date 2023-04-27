@@ -11,26 +11,86 @@
         inputFields.remove();
     }
     
-    function addInputFields(button){
-        console.log(button)
-        // Get the div element
-        const myDiv = document.getElementById(button);
+    //clear inputs
+    function clearInputFields(button){
 
-        // Get the last child element of the div
-        const lastChild = myDiv.lastElementChild;
-
-        // Clone the last child element
-        const clonedLastChild = lastChild.cloneNode(true);
-
-        const inputs = clonedLastChild.querySelectorAll('input');
+        const inputs = button.parentNode.querySelectorAll('input');
         inputs.forEach(input => {
         input.value = '';
         });
+      }
 
-        // Append the cloned element to the div
-        myDiv.appendChild(clonedLastChild);
+    function addInputFields(div) {
 
-    }
+        //Find parent div
+        const myDiv = document.getElementById(div);
+
+        // create the elements
+        var div = document.createElement("div");
+        div.setAttribute("id", "inputs");
+      
+        var label1 = document.createElement("label");
+        label1.setAttribute("for", "film_name");
+        label1.innerHTML = "Film Name: ";
+      
+        var input1 = document.createElement("input");
+        input1.setAttribute("type", "text");
+        input1.setAttribute("name", "film_name");
+        input1.setAttribute("id", "film_name");
+        input1.setAttribute("value", "");
+        input1.setAttribute("required", "");
+      
+        var label2 = document.createElement("label");
+        label2.setAttribute("for", "language");
+        label2.innerHTML = "Language:";
+      
+        var input2 = document.createElement("input");
+        input2.setAttribute("type", "text");
+        input2.setAttribute("name", "language");
+        input2.setAttribute("id", "language");
+        input2.setAttribute("value", "");
+        input2.setAttribute("required", "");
+      
+        var label3 = document.createElement("label");
+        label3.setAttribute("for", "show_time");
+        label3.innerHTML = "Show Time:";
+      
+        var input3 = document.createElement("input");
+        input3.setAttribute("name", "show_time");
+        input3.setAttribute("id", "show_time");
+        input3.setAttribute("value", "");
+        input3.setAttribute("required", "");
+      
+        var button1 = document.createElement("button");
+        button1.setAttribute("type", "button");
+        button1.setAttribute("class", "remove-film-input");
+        button1.setAttribute("onclick", "removeInputFields(this)");
+        button1.innerHTML = "Remove Film";
+
+        var button2 = document.createElement("button");
+        button2.setAttribute("type", "button");
+        button2.setAttribute("class", "clear-film-input");
+        button2.setAttribute("onclick", "clearInputFields(this)");
+        button2.innerHTML = "Clear";
+      
+        var br = document.createElement("br");
+      
+        // append the elements to the div
+        div.appendChild(label1);
+        div.appendChild(input1);
+        div.appendChild(label2);
+        div.appendChild(input2);
+        div.appendChild(label3);
+        div.appendChild(input3);
+        div.appendChild(button2);
+        div.appendChild(button1);
+        div.appendChild(br);
+      
+        // add the div to the document
+        myDiv.appendChild(div);
+      }
+      
+      
 
     $(document).on('submit', 'daily-input-form', function(e) {
         e.preventDefault(); // prevent the default form submission behavior
@@ -40,9 +100,8 @@
           url: '/upload/',
           type: 'POST',
           data: formData,
-          success: function(response) {
-            console.log('Form data submitted successfully.');
-            // handle the server response
+          success: function(){
+            alert('success');
           },
           error: function(xhr, status, error) {
             console.log('Error submitting form data: ' + error);
@@ -94,10 +153,11 @@
                                             <input type="text" name="language" id="language" value="{{show.language}}" required>
                                             <label for="show_time">Show Time:</label>
                                             <input name="show_time" id="show_time" value="{{show.show_times}}" required>                         
-                                            <button type="button" class="remove-film-input" onclick="removeInputFields(this)">Remove Film</button> 
+                                            <button type="button" class="clear-film-input" onclick="clearInputFields(this)">Clear</button>
+                                            <button type="button" class="remove-film-input" onclick="removeInputFields(this)">Remove Film</button>  
                                             <br>  
-                                        </div>                                                                    
-                                    {% endif %}                                            
+                                        </div>
+                                    {% endif %}                                                                                
                                 {% endfor %}                            
                             {% endif %}    
                         </div>

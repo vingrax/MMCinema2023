@@ -1,0 +1,20 @@
+{% extends 'Home/frontpage.html' %}
+
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <label for="location">Location:</label>
+    <select name="location" id="location">
+        <option hidden=true value="{{ selected_location_id }}">{{ defloc.name }}</option>
+        {% for location in locations %}
+        <option value="{{ location.id }}">{{ location.name }}</option>        
+        {% endfor %}
+    </select>
+    <label for='csvdate'>Date:</label>
+    <input type='date' name='csvdate' id='csvdate' value={% now "Y-m-d" %}>
+    <button type="submit">Download</button>
+</form>
+
+
+{% endblock content%}

@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/',include('Home.urls')),
     path('dashboard/',include(('dashboard.urls'))),
-    path('',RedirectView.as_view(url='home/login/'))
+    path('',RedirectView.as_view(url='home/login/')),
+    path('generatecsv/',include('cinemacsv.urls'))
 ]
