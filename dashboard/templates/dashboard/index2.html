@@ -1,0 +1,198 @@
+{% extends 'Home/frontpage.html' %}
+
+
+{% block content %}
+<script>
+    function removeInputFields(button) {
+        // Get the parent element of the button
+        const inputFields = button.parentNode;        
+        // Remove the input fields
+        inputFields.remove();
+    }
+    
+    //clear inputs
+    function clearInputFields(button){
+
+        const inputs = button.parentNode.querySelectorAll('input');
+        inputs.forEach(input => {
+        input.value = '';
+        });
+      }
+
+    function addInputFields(div) {
+
+        //Find parent div
+        const myDiv = document.getElementById(div);
+
+        // create the elements
+        var div = document.createElement("div");
+        div.setAttribute("id", "inputs");
+      
+        var label1 = document.createElement("label");
+        label1.setAttribute("for", "film_name");
+        label1.innerHTML = "Film Name: ";
+      
+        var input1 = document.createElement("input");
+        input1.setAttribute("type", "text");
+        input1.setAttribute("name", "film_name");
+        input1.setAttribute("id", "film_name");
+        input1.setAttribute("value", "");
+        input1.setAttribute("required", "");
+      
+        var label2 = document.createElement("label");
+        label2.setAttribute("for", "language");
+        label2.innerHTML = "Language:";
+      
+        var input2 = document.createElement("input");
+        input2.setAttribute("type", "text");
+        input2.setAttribute("name", "language");
+        input2.setAttribute("id", "language");
+        input2.setAttribute("value", "");
+        input2.setAttribute("required", "");
+      
+        var label3 = document.createElement("label");
+        label3.setAttribute("for", "show_time");
+        label3.innerHTML = "Show Time:";
+      
+        var input3 = document.createElement("input");
+        input3.setAttribute("name", "show_time");
+        input3.setAttribute("id", "show_time");
+        input3.setAttribute("value", "");
+        input3.setAttribute("required", "");
+      
+        var button1 = document.createElement("button");
+        button1.setAttribute("type", "button");
+        button1.setAttribute("class", "remove-film-input");
+        button1.setAttribute("onclick", "removeInputFields(this)");
+        button1.innerHTML = "Remove Film";
+
+        var button2 = document.createElement("button");
+        button2.setAttribute("type", "button");
+        button2.setAttribute("class", "clear-film-input");
+        button2.setAttribute("onclick", "clearInputFields(this)");
+        button2.innerHTML = "Clear";
+      
+        var br = document.createElement("br");
+      
+        // append the elements to the div
+        div.appendChild(label1);
+        div.appendChild(input1);
+        div.appendChild(label2);
+        div.appendChild(input2);
+        div.appendChild(label3);
+        div.appendChild(input3);
+        div.appendChild(button2);
+        div.appendChild(button1);
+        div.appendChild(br);
+      
+        // add the div to the document
+        myDiv.appendChild(div);
+      }
+    document.addEventListener("DOMContentLoaded", function(event) {
+      document.addEventListener('submit', (e) => {
+        e.preventDefault(); // prevent the default form submission behavior
+        const formData = new FormData(e.target); // get the form data
+        // send an AJAX request to the server
+        fetch('/dashboard/upload/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('success');
+            } else {
+                throw new Error('Error submitting form data');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            // handle the error
+        });
+    });
+    
+      
+});   
+</script>
+<h2>Select Location and Place INDEX 2</h2>
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        const locationDropdown = document.getElementById('location');
+        const placeDropdown = document.getElementById('place');
+        
+        locationDropdown.addEventListener('change', (event) => {
+            const selectedLocationId = event.target.value;
+            placeDropdown.innerHTML = '<option value="">Loading...</option>';
+
+            fetch(`/dashboard/get-places/?location_id=${selectedLocationId}`)
+                .then(response => response.json())
+                .then(data => {
+                    placeDropdown.innerHTML = '<option hidden="true" value="">Select a place</option>';
+                    data.forEach(place => {
+                        const option = document.createElement('option');
+                        option.value = place.id;
+                        option.text = place.name;
+                        placeDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    placeDropdown.innerHTML = '<option value="">Error loading places</option>';
+                    console.error(error);
+                });
+        });
+
+        placeDropdown.addEventListener('change', (event) => {
+            myDiv = document.getElementById('div')
+            if(myDiv){
+                myDiv.innerHTML=""
+            }
+            const selectedPlaceId = event.target.value;
+            if (selectedPlaceId) {
+                fetch('/dashboard/get-theaters/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.getElementsByName('csrfmiddlewaretoken')[0].value
+                    },
+                    body: JSON.stringify({
+                        place_id: selectedPlaceId
+                    })
+                })
+                .then(response => response.text())
+                .then(data => {
+                    const theatersContainer = document.createElement('div');
+                    theatersContainer.innerHTML = data;
+                    theatersContainer.id='theaters-container'
+                    const existingContainer = document.querySelector('#theaters-container');
+                    if (existingContainer) {
+                        existingContainer.remove();
+                    }
+                    document.body.appendChild(theatersContainer);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            }
+        });
+    });
+        
+</script>
+
+<form method="post">
+    {% csrf_token %}
+    <label for="location">Location:</label>
+    <select name="location" id="location">
+        <option hidden='True' id="placeholder" value="">Select a location</option>
+        {% for location in locations %}
+        <option value="{{ location.id }}">{{ location.name }}</option>        
+        {% endfor %}
+    </select>
+    <label for="place">Place:</label>
+    <select name="place" id="place"> 
+        <option value="">Select a location first</option>
+    </select>
+</form>
+
+
+{% endblock content %}
+
+

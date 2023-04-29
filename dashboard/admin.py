@@ -37,6 +37,5 @@ class EditionAdmin(admin.ModelAdmin):
 
 admin.site.register(Location,LocationAdmin)   
 admin.site.register(Spread)
-admin.site.unregister(Group)
 
 

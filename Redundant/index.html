@@ -92,23 +92,26 @@
       
       
 
-    $(document).on('submit', 'daily-input-form', function(e) {
+      document.addEventListener('submit', (e) => {
         e.preventDefault(); // prevent the default form submission behavior
-        var formData = $(this).serialize(); // serialize the form data
+        const formData = new FormData(e.target); // get the form data
         // send an AJAX request to the server
-        $.ajax({
-          url: '/upload/',
-          type: 'POST',
-          data: formData,
-          success: function(){
-            alert('success');
-          },
-          error: function(xhr, status, error) {
-            console.log('Error submitting form data: ' + error);
+        fetch('/dashboard/upload/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('success');
+            } else {
+                throw new Error('Error submitting form data');
+            }
+        })
+        .catch(error => {
+            console.error(error);
             // handle the error
-          }
         });
-      });
+    });
 
       
       
@@ -139,6 +142,8 @@
                 <h4>{{ screen.name }}</h4>
                 <form method="post" id="daily-input-form" action="{% url 'uploadHandle' %}">    
                     {% csrf_token %}
+                    <input type="hidden" name="selected_location_id" value="{{selected_location_id}}">
+                    <input type="hidden" name="selected_place_id" value="{{ selected_place_id }}">
                     <input type="hidden" name="screen_id" value="{{ screen.id }}">
                     <input type="hidden" name="theater_id" value="{{ theater.id }}">
                     <div>

@@ -4,9 +4,23 @@ from django.db.models import Max
 
 # Create your models here.
 class Location(models.Model):
-    name = models.CharField(db_column='Name', max_length=100)  # Field name made lowercase.
+    name = models.CharField(db_column='Name', max_length=100,null=False,blank=False)  # Field name made lowercase.
+    unitName = models.CharField(db_column='unitName',max_length=3,null=False,blank=False)
 
     class Meta:
+        permissions = [
+            ("editALP", "Can edit location Alappuzha"),
+            ("editCLT", "Can edit location Calicut"),
+            ("editCHN", "Can edit location Cochin"),
+            ("editKNR", "Can edit location Kannur"),            
+            ("editQLN", "Can edit location Kollam"),
+            ("editKTM", "Can edit location Kottayam"),
+            ("editMPM", "Can edit location Malappuram"),
+            ("editPKD", "Can edit location Palakkad"),
+            ("editPTA", "Can edit location Pathanamthitta"),
+            ("editTCR", "Can edit location Thrissur"),
+            ("editTVM", "Can edit location Trivandrum")
+        ]
         managed = False
         db_table = 'location'
     def __str__(self):
