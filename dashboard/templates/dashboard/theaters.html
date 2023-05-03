@@ -1,12 +1,12 @@
-<h2>Input Film Details for Each Theatre</h2>
+
     {% for theater in theaters %}
+        <div class="theatercard">
         <h3>{{ theater.name }}</h3> 
             {% for screen in theater.thrscreen.all %}
+            <div class="screen_container">
                 <h4>{{ screen.name }}</h4>
                 <form method="post" id="daily-input-form" action="{% url 'uploadHandle' %}">    
                     {% csrf_token %}
-                    <input type="hidden" name="selected_location_id" value="{{selected_location_id}}">
-                    <input type="hidden" name="selected_place_id" value="{{ selected_place_id }}">
                     <input type="hidden" name="screen_id" value="{{ screen.id }}">
                     <input type="hidden" name="theater_id" value="{{ theater.id }}">
                     <div>
@@ -14,7 +14,7 @@
                             {% if theater.thrshow.exists %}
                                 {% for show in theater.thrshow.all %}
                                     {% if show.screen_id_id == screen.id and show.current%}
-                                        <div id="inputs">
+                                        <div id="inputs" class="inputs">
                                             <label for="film_name">Film Name:</label>
                                             <input type="text" name="film_name" id="film_name" value="{{show.film_name}}"required>      
                                             <label for="language">Language:</label>
@@ -22,7 +22,7 @@
                                             <label for="show_time">Show Time:</label>
                                             <input name="show_time" id="show_time" value="{{show.show_times}}" required>                         
                                             <button type="button" class="clear-film-input" onclick="clearInputFields(this)">Clear</button>
-                                            <button type="button" class="remove-film-input" onclick="removeInputFields(this)">Remove Film</button>  
+                                            <button type="button" class="remove-film-input" onclick="removeInputFields(this)"><div class="icon2"></div>Remove Film</button>  
                                             <br>  
                                         </div>
                                     {% endif %}                                                                                
@@ -35,5 +35,7 @@
                         </div>    
                     </div>                  
                 </form>
-            {% endfor %}      
+            <div>
+            {% endfor %} 
+            </div>     
     {% endfor %}

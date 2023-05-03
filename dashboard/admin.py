@@ -23,6 +23,7 @@ class EditionplacesInline(admin.TabularInline):
 @admin.register(Theater)
 class TheaterAdmin(admin.ModelAdmin):
     inlines = [ScreenInline]
+    search_fields=('name',)
     form = TheaterForm
        
     

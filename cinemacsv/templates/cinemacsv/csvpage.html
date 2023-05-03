@@ -2,19 +2,30 @@
 
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    <label for="location">Location:</label>
-    <select name="location" id="location">
-        <option hidden=true value="{{ selected_location_id }}">{{ defloc.name }}</option>
-        {% for location in locations %}
-        <option value="{{ location.id }}">{{ location.name }}</option>        
-        {% endfor %}
-    </select>
-    <label for='csvdate'>Date:</label>
-    <input type='date' name='csvdate' id='csvdate' value={% now "Y-m-d" %}>
-    <button type="submit">Download</button>
-</form>
+<div class="container">
+<div class="card">
+    <h1>Enter Details</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="location">Location:</label>
+        <select name="location" id="location" class="dropdown" onchange="enableDownload()">
+            <option hidden=true >Select a location</option>
+            {% for location in locations %}
+            <option value="{{ location.id }}">{{ location.name }}</option>        
+            {% endfor %}
+        </select><br>
+        <label for='csvdate'>Date:</label>
+        <input type='date' name='csvdate' id='csvdate' value={% now "Y-m-d" %}><br>
+        <button type="submit" id="downloadButton" disabled>Download</button>
+    </form>
+    <script>
+        function enableDownload() {
+            var downloadButton = document.getElementById("downloadButton");
+            downloadButton.removeAttribute("disabled");
+        }
+    </script>
+</div>
+</div>
 
 
 {% endblock content%}

@@ -71,7 +71,7 @@ def get_places(request):
     places = Places.objects.filter(location_id=location_id)
     data = [{'id': place.id, 'name': place.name} for place in places]
     return JsonResponse(data, safe=False)
-
+@login_required
 def dashboardView(request):   
     locations = getlocation(request.user)   
     context = {        

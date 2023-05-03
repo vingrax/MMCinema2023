@@ -8,36 +8,230 @@ body{
     padding: 0;
     }
 
-nav{
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
+    .loginform, input, label, button {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
     }
-nav ul{
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-nav ul li{
-    margin: 0 10px;
-    }
-
     
-nav ul li a{
-    color: #fff;
-    text-decoration: none;
+    /* Apply to the form */
+    .loginform {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border-radius: 10px;
     }
+    
+    /* Apply to the form heading */
+    .loginform h1 {
+      text-align: center;
+      font-size: 28px;
+      color: #051663;
+    }
+    
+    /* Apply to the form fields */
+    .loginform input[type="text"],
+    .loginform input[type="password"] {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+    
+    /* Apply to the form labels */
+    .loginform label {
+      font-size: 16px;
+      color: #051663;
+    }
+    
+    /* Apply to the form button */
+    .loginform button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #051663;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+    }  
+    .icon {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background-image: url(image.png);
+      background-size: cover;
+      animation: rotate 7s linear infinite;
+    }
+    
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+ 
+    nav {
+        background-color: #051663;
+        color: #fff;
+        font-size: 1.2rem;
+        padding: 10px;
+      }
+      
+      nav ul {
+        display: flex;
+        justify-content: flex-end;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      
+      nav ul li {
+        margin-left: 20px;
+      }
+      
+      nav ul li:first-child {
+        margin-right: auto;
+        font-size: x-large;
+
+      }
+      
+      nav ul li a {
+        color: #fff;
+        text-decoration: none;
+      }
+      
+      nav h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        text-align: center;
+      }
+      
 nav ul li a:hover{
     color: #fff;
     text-decoration: underline;
+    
     }
-.container{
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 20px;
-}  
+.errorlist{
+  font-size: large;
+  list-style: none;
+  color: red
+}
 
+.theatercard{
+  
+    min-width: 75%;
+    width: fit-content;
+    margin: 5% 5%;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid #051663;
+      }
+.theatercard label {
+margin-bottom: 5px;
+font-weight: bold;
+}
+
+.theatercard h4 {
+  position: relative;  
+  text-align: center;
+  text-decoration: underline;
+}
+.theatercard input {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #051663;
+  }
+
+.theatercard button{
+    background-color: #051663;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .theatercard h3 {
+    background-color: #051663;
+    position: relative;
+    color: #ffffff;
+    z-index: 1;
+    margin: 0;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+  }
+.inputs{
+  display: inline-block;
+}
+
+.dropdown-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.dropdown {
+  margin: 0 10px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.dropdown:focus {
+  outline: none;
+  box-shadow: 0 0 3px #ccc;
+}
+.dropdown:hover {
+  box-shadow:0 0 10px 0 #051663;
+  transition: box-shadow 0.3s ease-in-out;
+}
+.label {
+  display: block;
+  margin: 10px;
+  margin-right: 0%;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+.card {
+  width: 400px;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  text-align: center;  
+  border: 1px solid #051663;
+}
+.card button{
+  background-color: #051663;
+  color: #fff;
+  margin-top: 5px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.card input[type='date']::-webkit-calendar-picker-indicator {
+  padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #051663;
+  filter: invert(1) hue-rotate(180deg);
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}

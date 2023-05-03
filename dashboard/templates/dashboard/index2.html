@@ -27,6 +27,7 @@
         // create the elements
         var div = document.createElement("div");
         div.setAttribute("id", "inputs");
+        div.setAttribute("display","inline-block")
       
         var label1 = document.createElement("label");
         label1.setAttribute("for", "film_name");
@@ -38,10 +39,11 @@
         input1.setAttribute("id", "film_name");
         input1.setAttribute("value", "");
         input1.setAttribute("required", "");
+
       
         var label2 = document.createElement("label");
         label2.setAttribute("for", "language");
-        label2.innerHTML = "Language:";
+        label2.innerHTML = " Language: ";
       
         var input2 = document.createElement("input");
         input2.setAttribute("type", "text");
@@ -52,7 +54,7 @@
       
         var label3 = document.createElement("label");
         label3.setAttribute("for", "show_time");
-        label3.innerHTML = "Show Time:";
+        label3.innerHTML = " Show Time: ";
       
         var input3 = document.createElement("input");
         input3.setAttribute("name", "show_time");
@@ -65,12 +67,15 @@
         button1.setAttribute("class", "remove-film-input");
         button1.setAttribute("onclick", "removeInputFields(this)");
         button1.innerHTML = "Remove Film";
+        button1.style.marginLeft = "5px";
 
         var button2 = document.createElement("button");
         button2.setAttribute("type", "button");
         button2.setAttribute("class", "clear-film-input");
         button2.setAttribute("onclick", "clearInputFields(this)");
+        button2.style.marginLeft = "5px";
         button2.innerHTML = "Clear";
+        
       
         var br = document.createElement("br");
       
@@ -113,7 +118,6 @@
       
 });   
 </script>
-<h2>Select Location and Place INDEX 2</h2>
 <script>
     document.addEventListener("DOMContentLoaded", function(event) {
         const locationDropdown = document.getElementById('location');
@@ -179,17 +183,20 @@
 
 <form method="post">
     {% csrf_token %}
-    <label for="location">Location:</label>
-    <select name="location" id="location">
+    
+<div class="dropdown-container">
+    <label for="location" class="label">Location:</label>
+    <select name="location" id="location" class="dropdown">
         <option hidden='True' id="placeholder" value="">Select a location</option>
         {% for location in locations %}
         <option value="{{ location.id }}">{{ location.name }}</option>        
         {% endfor %}
     </select>
-    <label for="place">Place:</label>
-    <select name="place" id="place"> 
+    <label for="place" class="label">Place:</label>
+    <select name="place" id="place" class="dropdown"> 
         <option value="">Select a location first</option>
     </select>
+</div>
 </form>
 
 
