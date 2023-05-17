@@ -1,6 +1,6 @@
 from django import forms
 from dal import autocomplete
-from .models import Theater,Places
+from .models import Theater,Places,Screen
 
 class TheaterForm(forms.ModelForm):
 
@@ -14,3 +14,4 @@ class TheaterForm(forms.ModelForm):
     class Meta:
         model = Theater
         fields = "__all__"
+

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
+from django.forms import inlineformset_factory
 from .models import Spread,Edition,Editionplaces,Theater,Screen,Location
 from .forms import TheaterForm
 
@@ -24,7 +25,14 @@ class EditionplacesInline(admin.TabularInline):
 class TheaterAdmin(admin.ModelAdmin):
     inlines = [ScreenInline]
     search_fields=('name',)
-    form = TheaterForm
+    form=TheaterForm
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        ScreenFormSet = inlineformset_factory(Theater, Screen, fields=('name',))
+        formset = ScreenFormSet(request.POST, instance=obj)
+        if formset.is_valid():
+            formset.save()
        
     
 class LocationAdmin(admin.ModelAdmin):
@@ -38,5 +46,6 @@ class EditionAdmin(admin.ModelAdmin):
 
 admin.site.register(Location,LocationAdmin)   
 admin.site.register(Spread)
+
 
 

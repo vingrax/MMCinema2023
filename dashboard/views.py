@@ -2,10 +2,9 @@ from datetime import date, timedelta
 
 import json
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import InputTable,Places,Location,Theater,Screen,DailyInputs
-from django.db.models import Max
-from django.http import HttpResponse,JsonResponse
-from django.contrib.auth.decorators import login_required,permission_required
+from .models import Places,Location,Theater,DailyInputs,Screen
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from dal import autocomplete
 from django.db.models import Lookup
 from django.db.models import Field
@@ -21,50 +20,68 @@ class NotEqual(Lookup):
         return '%s <> %s' % (lhs, rhs), params
 Field.register_lookup(NotEqual)
 
+from django.db.models import Count
+
+def create_screens():
+    # get all theaters with no screens
+    theaters = Theater.objects.annotate(num_screens=Count('thrscreen')).filter(num_screens=0)
+    # iterate over each theater
+    for theater in theaters:
+        # get the number of screens required
+        num_screens = int(theater.screens)
+        # create screens
+        for i in range(num_screens):
+            # create screen with name "Screen 1", "Screen 2", etc.
+            screen_name = f"Screen {i+1}"
+            Screen.objects.create(name=screen_name, theater=theater)
+                                  
 def updateCurrent(date):    
+    daily_inputs=[]
     currentFilms = DailyInputs.objects.filter(current=True).filter(date__ne=date)
     if currentFilms:
         for film in currentFilms:
             DailyInputs.objects.filter(id=film.id).update(current=False)
             daily_input = DailyInputs(film_name=film.film_name, language=film.language, show_times=film.show_times, screen_id_id=film.screen_id_id, theater_id_id=film.theater_id_id, current=True,date=date)
-            daily_input.save()
+            daily_inputs.append(daily_input)
+        # Save all DailyInputs instances to database in a single query
+        DailyInputs.objects.bulk_create(daily_inputs)
 
 
-
-
-# Create your views here.
 def uploadHandler(request):
     if request.method == 'POST':
-        updateCurrent(date.today()+ timedelta(days=1))
-        films = request.POST.getlist('film_name')
-        languages = request.POST.getlist('language')
-        show_times = request.POST.getlist('show_time')        
-        screen_id = request.POST.get('screen_id')
+        tomorrow = date.today() + timedelta(days=1)
+        updateCurrent(tomorrow)
         theater_id = request.POST.get('theater_id')
-        if films:
-            i=0
-            # Set all previous DailyInputs with same screen_id to current=False
-            
-            DailyInputs.objects.filter(screen_id_id=screen_id).update(current=False)
-            for film in films:
-                language = languages[i]
-                show_time = show_times[i]                     
-                # Create new DailyInputs instance and save to database
-                daily_input = DailyInputs(film_name=film, language=language, show_times=show_time, screen_id_id=screen_id, theater_id_id=theater_id, current=True,date=date.today()+ timedelta(days=1))
-                daily_input.save()
-                i+=1
-        else:
-            DailyInputs.objects.filter(screen_id_id=screen_id).update(current=False)
+        # Set all previous DailyInputs with same theater_id to current=False
+        DailyInputs.objects.filter(theater_id_id=theater_id, current=True).update(current=False)
+        # Create list of DailyInputs instances to be saved
+        daily_inputs = []
+        # Iterate through the screens in the theater
+        for screen in Theater.objects.get(id=theater_id).thrscreen.all():
+            screen_id = screen.id
+            films = request.POST.getlist(f'film_name_{screen_id}')
+            languages = request.POST.getlist(f'language_{screen_id}')
+            show_times = request.POST.getlist(f'show_time_{screen_id}')
+            if films:
+                for i in range(len(films)):
+                    film = films[i]
+                    language = languages[i]
+                    show_time = show_times[i]
+                    daily_input = DailyInputs(film_name=film, language=language, show_times=show_time, screen_id_id=screen_id, theater_id_id=theater_id, current=True, date=tomorrow)
+                    daily_inputs.append(daily_input)
+        # Save all DailyInputs instances to database in a single query
+        DailyInputs.objects.bulk_create(daily_inputs)
         return JsonResponse({'status': 'success'})
-    else:
-        # Return a 400 Bad Request response for GET requests
-        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+
+ 
             
 def get_theaters(request):
     json_data = json.loads(request.body)
     theaters = Theater.objects.filter(place_id=json_data['place_id'])
     context = {'theaters':theaters}
-    return render(request,'dashboard/theaters.html',context)
+    return render(request,'dashboard/theaters2.html',context)
 
 def get_places(request):
     location_id = request.GET.get('location_id')
@@ -88,6 +105,21 @@ class PlaceAutocompleteView(autocomplete.Select2QuerySetView):
         location = self.forwarded.get('location', None)
         if location:
             qs = Places.objects.filter(location=location)
+        else:
+            qs = Places.objects.none()
+
+
+        return qs
+    
+class TheaterAutocompleteView(autocomplete.Select2QuerySetView):
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Places.objects.none()
+
+        place = self.forwarded.get('place', None)
+        if place:
+            qs = Places.objects.filter(place=place)
         else:
             qs = Places.objects.none()
 

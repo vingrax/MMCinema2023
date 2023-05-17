@@ -1,0 +1,47 @@
+{% for theater in theaters %}
+    <div class="theatercard">
+        <h3>{{ theater.name }}</h3> 
+        {% if theater.t_sub %}<h3>{{ theater.t_sub }}</h3> 
+        {% endif %}
+        
+        <form method="post" id="daily-input-form" action="{% url 'uploadHandle' %}">    
+            {% csrf_token %}
+            {% for screen in theater.thrscreen.all %}
+                <div class="screen_container">
+                    <h4>{{ screen.name }}</h4>
+                    <div>
+                        <div class="film-input" id="input-field{{screen.id}}">     
+                            {% if theater.thrshow.exists %}
+                                {% for show in theater.thrshow.all %}
+                                    {% if show.screen_id_id == screen.id and show.current%}
+                                        <div id="inputs" class="inputs">
+                                            <label for="film_name_{{ screen.id }}">Film Name:</label>
+                                            <input type="text" name="film_name_{{ screen.id }}" id="film_name_{{ screen.id }}" value="{{show.film_name}}" required>      
+
+                                            <label for="language_{{ screen.id }}">Language:</label>
+                                            <input type="text" name="language_{{ screen.id }}" id="language_{{ screen.id }}" value="{{show.language}}" >
+
+                                            <label for="show_time_{{ screen.id }}">Show Time:</label>
+                                            <input name="show_time_{{ screen.id }}" id="show_time_{{ screen.id }}" value="{{show.show_times}}" >
+                        
+                                            <button type="button" class="clear-film-input" onclick="clearInputFields(this)">Clear</button>
+                                            <button type="button" class="remove-film-input" onclick="removeInputFields(this)">Remove Film</button>  
+                                            <br>  
+                                        </div>
+                                    {% endif %}                                                                                
+                                {% endfor %}                            
+                            {% endif %}  
+                                        <br>
+                           
+                        </div>    
+                    </div>  
+                    <button type="button" class="add-film-input" onClick="addInputFields('input-field{{screen.id}}',{{screen.id}})">Add Film</button>                
+                </div>
+            {% endfor %} 
+            <input type="hidden" name="theater_id" value="{{ theater.id }}">
+            <div class="film-input-actions">
+            <button type="submit" class="inputFormSumbitBTN" name='submit'>Submit</button>    
+            </div>
+        </form>
+    </div>     
+{% endfor %}

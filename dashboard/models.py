@@ -55,7 +55,7 @@ class Places(models.Model):
 class Theater(models.Model):
     location = models.ForeignKey(Location, models.DO_NOTHING, db_column='Location')  # Field name made lowercase.
     name = models.CharField(db_column='Name', max_length=100)  # Field name made lowercase.
-    contactnumber = PhoneNumberField(db_column='ContactNumber', blank=True,region="IN")  # Field name made lowercase.
+    contactnumber = models.CharField(db_column='ContactNumber',max_length=200,null=True, blank=True)  # Field name made lowercase.
     screens = models.CharField(db_column='Screen',max_length=45)  # Field name made lowercase.
     place = models.ForeignKey(Places, models.DO_NOTHING, db_column='Place', blank=True, null=True)  # Field name made lowercase.
     t_sub = models.CharField(db_column='T_sub', max_length=100, blank=True, null=True)  # Field name made lowercase.
@@ -73,8 +73,6 @@ class Screen(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     name = models.CharField(db_column='Name', max_length=45)  # Field name made lowercase.
     theater = models.ForeignKey(Theater,models.CASCADE,db_column='Theater', max_length=45,related_name='thrscreen')  # Field name made lowercase.
-    place = models.CharField(db_column='Place', max_length=45)  # Field name made lowercase.
-    screen_no = models.CharField(max_length=45)
 
     class Meta:
         managed = False

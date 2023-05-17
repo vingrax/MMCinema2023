@@ -19,7 +19,7 @@
         });
       }
 
-    function addInputFields(div) {
+    function addInputFields(div,screen_id) {
 
         //Find parent div
         const myDiv = document.getElementById(div);
@@ -30,35 +30,34 @@
         div.setAttribute("display","inline-block")
       
         var label1 = document.createElement("label");
-        label1.setAttribute("for", "film_name");
+        label1.setAttribute("for", `film_name_`+ screen_id);
         label1.innerHTML = "Film Name: ";
-      
+
         var input1 = document.createElement("input");
         input1.setAttribute("type", "text");
-        input1.setAttribute("name", "film_name");
-        input1.setAttribute("id", "film_name");
+        input1.setAttribute("name", "film_name_" + screen_id);
+        input1.setAttribute("id", "film_name_" + screen_id);
         input1.setAttribute("value", "");
         input1.setAttribute("required", "");
 
-      
         var label2 = document.createElement("label");
-        label2.setAttribute("for", "language");
+        label2.setAttribute("for", `language_`+ screen_id);
         label2.innerHTML = " Language: ";
-      
+
         var input2 = document.createElement("input");
         input2.setAttribute("type", "text");
-        input2.setAttribute("name", "language");
-        input2.setAttribute("id", "language");
+        input2.setAttribute("name", `language_`+ screen_id);
+        input2.setAttribute("id", `language_`+ screen_id);
         input2.setAttribute("value", "");
         input2.setAttribute("required", "");
-      
+
         var label3 = document.createElement("label");
-        label3.setAttribute("for", "show_time");
+        label3.setAttribute("for", `show_time_`+ screen_id);
         label3.innerHTML = " Show Time: ";
-      
+
         var input3 = document.createElement("input");
-        input3.setAttribute("name", "show_time");
-        input3.setAttribute("id", "show_time");
+        input3.setAttribute("name", `show_time_`+ screen_id);
+        input3.setAttribute("id", `show_time_`+ screen_id);
         input3.setAttribute("value", "");
         input3.setAttribute("required", "");
       
@@ -104,7 +103,9 @@
         })
         .then(response => {
             if (response.ok) {
-                alert('success');
+                const submitButton = e.target.querySelector('.inputFormSumbitBTN');
+                submitButton.style.backgroundColor = 'green';
+                submitButton.textContent = 'Submitted';
             } else {
                 throw new Error('Error submitting form data');
             }

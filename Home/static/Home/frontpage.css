@@ -2,11 +2,19 @@ html{
     font-size : 16px;
     line-height: 1.5;
     }
-
-body{
-    margin: 0;
-    padding: 0;
+  
+    /* Main styles */
+    body {
+      margin: 0%;
+      /* img size is 50x50 */
+      background: #fff;
     }
+    
+/* body{
+    margin: 0;
+    background-image: url(love.gif);
+    padding: 0;
+    } */
 
     .loginform, input, label, button {
       box-sizing: border-box;
@@ -67,7 +75,14 @@ body{
       background-size: cover;
       animation: rotate 7s linear infinite;
     }
-    
+    .icon:hover {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background-image: url(image.png);
+      background-size: cover;
+      animation: rotate 2s linear infinite;
+    }
     @keyframes rotate {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
@@ -78,6 +93,7 @@ body{
         color: #fff;
         font-size: 1.2rem;
         padding: 10px;
+        scroll-behavior: initial;
       }
       
       nav ul {
@@ -121,15 +137,17 @@ nav ul li a:hover{
 }
 
 .theatercard{
-  
+    background-color: #ffffff;
     min-width: 75%;
     width: fit-content;
-    margin: 5% 5%;
+    margin:10%;
+    margin-top: 0%;
+    margin-bottom: 3%;
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border: 1px solid #051663;
-      }
+}
 .theatercard label {
 margin-bottom: 5px;
 font-weight: bold;
@@ -222,16 +240,27 @@ font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
 }
-.card input[type='date']::-webkit-calendar-picker-indicator {
-  padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #051663;
-  filter: invert(1) hue-rotate(180deg);
-}
-.container {
+.film-input-actions {
   display: flex;
   justify-content: center;
+  margin-top: 1%;
+}
+
+.film-input-actions button{
+  background-color: #fff;
+  border:1px solid #051663;
+  color: #333;
+  font-size: x-large;
+  border-radius: 5px;
+}
+.film-input-actions button:hover{
+  text-decoration: underline;
+}
+
+.container{
+  display:flex;
+  justify-content: center;
   align-items: center;
-  height: 100vh;
+  padding: 50;
+  
 }
