@@ -14,7 +14,7 @@ def generate_csv(location_id,date):
     filename = f"{location.unitName}.csv"
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'att achment; filename="{filename}"'
-    editions = Edition.objects.filter(location_id=location_id).order_by()        
+    editions = Edition.objects.filter(location_id=location_id)       
     writer = csv.writer(response)
     writer.writerow(['Editions','Date','PlaceName', 'Theater Name','Spread','Theater Sub','Old Theater Name','Screen No','No Show','FilmName', 'Language', 'Time','Contact No','Ticket Booking'])
 
